@@ -1,7 +1,7 @@
 // src/app/api/twilio-webhook/route.ts
 import { NextResponse, NextRequest } from "next/server";
 import { z } from "zod";
-import { prisma } from "@/lib/db";
+import { db } from "~/server/db";
 
 const twilioWebhookSchema = z.object({
   From: z.string().startsWith("whatsapp:"),
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     const messageBody = validatedInput.Body || (messageType === 'media' ? '[Media Message]' : null);
     const firstMediaUrl = mediaUrls.length > 0 ? mediaUrls[0] : null;
 
-    newMessage = await prisma.whatsappMessage.create({
+    newMessage = await db.whatsappMessage.create({
       data: {
         whatsappMessageId: validatedInput.MessageSid,
         senderPhoneNumber: validatedInput.From,
@@ -167,7 +167,7 @@ export async function POST(req: NextRequest) {
         }
 
         if (Object.keys(extractedData).length > 0) {
-          await prisma.propertyInquiry.create({
+          await db.propertyInquiry.create({
             data: {
               whatsappMessageId: newMessage.whatsappMessageId,
               inquiryDateTime: extractedData.inquiryDateTime ? new Date(extractedData.inquiryDateTime) : null,
