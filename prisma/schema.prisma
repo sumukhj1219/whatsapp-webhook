@@ -60,22 +60,45 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
-// src/prisma/schema.prisma
-
 model WhatsappMessage {
-    id                  String   @id @default(cuid()) // Prisma generates a unique ID
-    whatsappMessageId   String   @unique // To store Twilio's MessageSid
+    id                  String   @id @default(cuid()) 
+    whatsappMessageId   String   @unique 
     senderPhoneNumber   String
     receiverPhoneNumber String
-    messageBody         String?  @db.Text // Add @db.Text for potentially long messages
+    messageBody         String?  @db.Text 
     messageType         String
     mediaUrl            String?
     profileName         String?
-    timestamp           DateTime @default(now()) // Prisma sets current timestamp on creation
+    timestamp           DateTime @default(now())
     isIncoming          Boolean
     status              String
-
-    // Add indexes for better performance on common queries
+    propertyInquiry     PropertyInquiry[]
     @@index([senderPhoneNumber])
     @@index([timestamp])
+}
+
+model PropertyInquiry {
+  id                String    @id @default(cuid())
+  whatsappMessageId String    @unique 
+  whatsappMessage   WhatsappMessage @relation(fields: [whatsappMessageId], references: [whatsappMessageId])
+
+  inquiryDateTime   DateTime? 
+  type              String?   
+  transaction       String?   
+  bhkConfig         String?   
+  address           String?
+  pinCode           String?
+  area              String?   
+  price             String?  
+  condition         String?   
+  floor             String?   
+  features          String?   @db.Text 
+  contact           String?   
+
+  createdAt         DateTime  @default(now()) 
+
+  @@index([inquiryDateTime])
+  @@index([type])
+  @@index([transaction])
+  @@map("property_inquiries") 
 }
