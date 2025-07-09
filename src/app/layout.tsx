@@ -22,11 +22,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geist.variable}`}>
       <body>
-        <TRPCReactProvider>
-          <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange={false}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange={false}>
+          <TRPCReactProvider>
             {children}
-          </ThemeProvider>
-        </TRPCReactProvider>
+          </TRPCReactProvider>
+        </ThemeProvider>
+
       </body>
     </html>
   );
